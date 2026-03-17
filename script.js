@@ -116,7 +116,7 @@ function syncActionState() {
 
   signUpButton.disabled = isBusy || !clientReady;
   signInButton.disabled = isBusy || !clientReady;
-  signOutButton.disabled = isBusy || !clientReady || !currentSession;
+  signOutButton.disabled = isBusy || !clientReady;
   publishButton.disabled = isBusy || !clientReady;
   refreshPostsButton.disabled = isBusy || !clientReady;
 
@@ -370,6 +370,13 @@ async function signIn() {
 
 async function signOut() {
   if (!ensureClient()) {
+    return;
+  }
+
+  if (!currentSession) {
+    setAuthFeedback("현재 로그인된 상태가 아닙니다.");
+    setStatus("idle", "로그인 세션이 없어도 게시판은 계속 사용할 수 있습니다.");
+    writeLog("로그아웃 요청이 있었지만 활성 세션이 없었습니다.");
     return;
   }
 
