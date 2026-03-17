@@ -47,12 +47,12 @@ const logEntries = [];
 
 function setStatus(kind, message) {
   connectionPill.className = `status-pill ${kind}`;
-  connectionPill.textContent = kind === "success" ? "Connected" : kind === "error" ? "Error" : "Ready";
+  connectionPill.textContent = kind === "success" ? "연결됨" : kind === "error" ? "오류" : "준비됨";
   connectionText.textContent = message;
 }
 
 function writeLog(message) {
-  const timestamp = new Date().toLocaleTimeString();
+  const timestamp = new Date().toLocaleTimeString("ko-KR");
   logEntries.unshift(`[${timestamp}] ${message}`);
   activityLog.textContent = logEntries.slice(0, 12).join("\n");
 }
@@ -61,15 +61,15 @@ function writeSession(session) {
   currentSession = session;
 
   if (!session) {
-    sessionSummary.textContent = "No active session.";
+    sessionSummary.textContent = "활성 세션이 없습니다.";
     sessionOutput.textContent = "null";
     syncActionState();
     renderPosts(currentPosts);
     return;
   }
 
-  const email = session.user?.email ?? "unknown user";
-  sessionSummary.textContent = `Signed in as ${email}.`;
+  const email = session.user?.email ?? "알 수 없는 사용자";
+  sessionSummary.textContent = `${email} 계정으로 로그인되어 있습니다.`;
   sessionOutput.textContent = JSON.stringify(
     {
       user: {
@@ -104,7 +104,7 @@ function ensureClient() {
     return true;
   }
 
-  const message = "Supabase client is not ready yet.";
+  const message = "Supabase 클라이언트가 아직 준비되지 않았습니다.";
   setAuthFeedback(message);
   setStatus("error", message);
   writeLog(message);
@@ -135,11 +135,11 @@ function getCredentials() {
   const password = passwordInput.value;
 
   if (!email || !password) {
-    throw new Error("Enter both email and password.");
+    throw new Error("이메일과 비밀번호를 모두 입력하세요.");
   }
 
   if (password.length < 6) {
-    throw new Error("Password must be at least 6 characters.");
+    throw new Error("비밀번호는 최소 6자 이상이어야 합니다.");
   }
 
   return { email, password };
@@ -147,7 +147,7 @@ function getCredentials() {
 
 function getPostPayload() {
   if (!currentSession) {
-    throw new Error("Sign in first to publish a post.");
+    throw new Error("글을 작성하려면 먼저 로그인하세요.");
   }
 
   const authorName =
@@ -158,27 +158,27 @@ function getPostPayload() {
   const content = postContentInput.value.trim();
 
   if (!authorName) {
-    throw new Error("Enter a display name.");
+    throw new Error("작성자 이름을 입력하세요.");
   }
 
   if (!title) {
-    throw new Error("Enter a title.");
+    throw new Error("제목을 입력하세요.");
   }
 
   if (!content) {
-    throw new Error("Enter post content.");
+    throw new Error("게시글 내용을 입력하세요.");
   }
 
   if (authorName.length > 40) {
-    throw new Error("Display name must be 40 characters or fewer.");
+    throw new Error("작성자 이름은 40자 이하로 입력하세요.");
   }
 
   if (title.length > 120) {
-    throw new Error("Title must be 120 characters or fewer.");
+    throw new Error("제목은 120자 이하로 입력하세요.");
   }
 
   if (content.length > 2000) {
-    throw new Error("Content must be 2000 characters or fewer.");
+    throw new Error("내용은 2000자 이하로 입력하세요.");
   }
 
   return {
@@ -195,7 +195,7 @@ function renderPosts(posts) {
   if (!posts.length) {
     const emptyState = document.createElement("article");
     emptyState.className = "empty-state";
-    emptyState.textContent = "No posts yet. Create the table, sign in, and publish the first one.";
+    emptyState.textContent = "아직 게시글이 없습니다. 로그인해서 첫 글을 작성해보세요.";
     postsList.append(emptyState);
     syncActionState();
     return;
@@ -213,7 +213,7 @@ function renderPosts(posts) {
 
     const meta = document.createElement("p");
     meta.className = "post-meta";
-    meta.textContent = `${post.author_name} - ${new Date(post.created_at).toLocaleString()}`;
+    meta.textContent = `${post.author_name} - ${new Date(post.created_at).toLocaleString("ko-KR")}`;
 
     const content = document.createElement("p");
     content.className = "post-content";
@@ -231,7 +231,7 @@ function renderPosts(posts) {
       deleteButton.type = "button";
       deleteButton.dataset.deletePost = post.id;
       deleteButton.dataset.title = post.title;
-      deleteButton.textContent = "Delete";
+      deleteButton.textContent = "삭제";
 
       actions.append(deleteButton);
       article.append(actions);
@@ -268,17 +268,17 @@ async function loadPosts(options = {}) {
     renderPosts(currentPosts);
     setBoardFeedback(
       currentSession
-        ? "You can publish a new post or delete your own posts."
-        : "Read access is public. Sign in to publish."
+        ? "새 글을 작성하거나 내 글을 삭제할 수 있습니다."
+        : "게시글 읽기는 공개되어 있습니다. 글을 쓰려면 로그인하세요."
     );
-    setStatus("success", `Loaded ${currentPosts.length} posts from ${BOARD_TABLE}.`);
-    writeLog(`Loaded ${currentPosts.length} posts.`);
+    setStatus("success", `${BOARD_TABLE} 에서 게시글 ${currentPosts.length}개를 불러왔습니다.`);
+    writeLog(`게시글 ${currentPosts.length}개를 불러왔습니다.`);
   } catch (error) {
     currentPosts = [];
     renderPosts(currentPosts);
-    setBoardFeedback(`Post load failed: ${error.message}`);
-    setStatus("error", `Could not read ${BOARD_TABLE}.`);
-    writeLog(`Post load failed: ${error.message}`);
+    setBoardFeedback(`게시글을 불러오지 못했습니다: ${error.message}`);
+    setStatus("error", `${BOARD_TABLE} 을(를) 읽지 못했습니다.`);
+    writeLog(`게시글 불러오기 실패: ${error.message}`);
   } finally {
     if (!keepBusy) {
       setBusy(false);
@@ -312,21 +312,21 @@ async function signUp() {
     writeSession(data.session ?? null);
 
     if (data.session) {
-      setAuthFeedback("Sign-up completed and session created.");
-      setStatus("success", "Supabase auth is working from GitHub Pages.");
-      writeLog(`Signed up and logged in as ${email}.`);
+      setAuthFeedback("회원가입이 완료되었고 세션도 생성되었습니다.");
+      setStatus("success", "GitHub Pages에서 Supabase 인증이 정상 동작합니다.");
+      writeLog(`${email} 계정으로 회원가입 후 로그인했습니다.`);
       return;
     }
 
     setAuthFeedback(
-      "Sign-up submitted. Check email if confirmation is enabled."
+      "회원가입 요청을 보냈습니다. 이메일 인증이 켜져 있으면 메일을 확인하세요."
     );
-    setStatus("success", "Supabase accepted the sign-up request.");
-    writeLog(`Sign-up submitted for ${email}.`);
+    setStatus("success", "Supabase가 회원가입 요청을 받았습니다.");
+    writeLog(`${email} 계정에 대한 회원가입 요청을 보냈습니다.`);
   } catch (error) {
     setAuthFeedback(error.message);
-    setStatus("error", "Supabase auth returned an error.");
-    writeLog(`Sign-up failed: ${error.message}`);
+    setStatus("error", "Supabase 인증 처리 중 오류가 발생했습니다.");
+    writeLog(`회원가입 실패: ${error.message}`);
   } finally {
     setBusy(false);
   }
@@ -360,13 +360,13 @@ async function signIn() {
     }
 
     writeSession(data.session ?? null);
-    setAuthFeedback("Sign-in completed.");
-    setStatus("success", "Supabase auth session is active.");
-    writeLog(`Signed in as ${email}.`);
+    setAuthFeedback("로그인이 완료되었습니다.");
+    setStatus("success", "Supabase 인증 세션이 활성화되었습니다.");
+    writeLog(`${email} 계정으로 로그인했습니다.`);
   } catch (error) {
     setAuthFeedback(error.message);
-    setStatus("error", "Supabase sign-in failed.");
-    writeLog(`Sign-in failed: ${error.message}`);
+    setStatus("error", "Supabase 로그인에 실패했습니다.");
+    writeLog(`로그인 실패: ${error.message}`);
   } finally {
     setBusy(false);
   }
@@ -386,13 +386,13 @@ async function signOut() {
     }
 
     writeSession(null);
-    setAuthFeedback("Signed out.");
-    setStatus("success", "Client is still connected. Session cleared.");
-    writeLog("Signed out.");
+    setAuthFeedback("로그아웃되었습니다.");
+    setStatus("success", "연결은 유지된 상태에서 세션만 정리되었습니다.");
+    writeLog("로그아웃했습니다.");
   } catch (error) {
     setAuthFeedback(error.message);
-    setStatus("error", "Supabase sign-out failed.");
-    writeLog(`Sign-out failed: ${error.message}`);
+    setStatus("error", "Supabase 로그아웃에 실패했습니다.");
+    writeLog(`로그아웃 실패: ${error.message}`);
   } finally {
     setBusy(false);
   }
@@ -423,14 +423,14 @@ async function publishPost() {
 
     postTitleInput.value = "";
     postContentInput.value = "";
-    setBoardFeedback("Post published.");
-    setStatus("success", `New post added to ${BOARD_TABLE}.`);
-    writeLog(`Created post "${payload.title}".`);
+    setBoardFeedback("게시글이 등록되었습니다.");
+    setStatus("success", `${BOARD_TABLE} 에 새 글이 추가되었습니다.`);
+    writeLog(`"${payload.title}" 게시글을 작성했습니다.`);
     await loadPosts({ keepBusy: true });
   } catch (error) {
     setBoardFeedback(error.message);
-    setStatus("error", `Could not insert into ${BOARD_TABLE}.`);
-    writeLog(`Post creation failed: ${error.message}`);
+    setStatus("error", `${BOARD_TABLE} 에 글을 추가하지 못했습니다.`);
+    writeLog(`게시글 작성 실패: ${error.message}`);
   } finally {
     setBusy(false);
   }
@@ -441,7 +441,7 @@ async function deletePost(postId, title) {
     return;
   }
 
-  if (!window.confirm(`Delete "${title}"?`)) {
+  if (!window.confirm(`"${title}" 글을 삭제할까요?`)) {
     return;
   }
 
@@ -457,14 +457,14 @@ async function deletePost(postId, title) {
       throw error;
     }
 
-    setBoardFeedback("Post deleted.");
-    setStatus("success", "Post deleted.");
-    writeLog(`Deleted post "${title}".`);
+    setBoardFeedback("게시글이 삭제되었습니다.");
+    setStatus("success", "게시글이 삭제되었습니다.");
+    writeLog(`"${title}" 게시글을 삭제했습니다.`);
     await loadPosts({ keepBusy: true });
   } catch (error) {
     setBoardFeedback(error.message);
-    setStatus("error", `Could not delete from ${BOARD_TABLE}.`);
-    writeLog(`Post delete failed: ${error.message}`);
+    setStatus("error", `${BOARD_TABLE} 에서 글을 삭제하지 못했습니다.`);
+    writeLog(`게시글 삭제 실패: ${error.message}`);
   } finally {
     setBusy(false);
   }
@@ -474,8 +474,8 @@ async function initializeSupabase() {
   setBusy(true);
 
   if (!window.supabase?.createClient) {
-    setStatus("error", "Supabase library failed to load.");
-    writeLog("Supabase CDN script did not initialize.");
+    setStatus("error", "Supabase 라이브러리를 불러오지 못했습니다.");
+    writeLog("Supabase CDN 스크립트가 초기화되지 않았습니다.");
     setBusy(false);
     return;
   }
@@ -485,18 +485,18 @@ async function initializeSupabase() {
     SUPABASE_PUBLIC_KEY
   );
 
-  setStatus("idle", "Supabase client initialized. Sign in to publish or read the board publicly.");
-  writeLog("Supabase client initialized.");
-  setAuthFeedback("Use email/password auth from Supabase.");
-  setBoardFeedback("Run supabase-board.sql once, then refresh.");
+  setStatus("idle", "Supabase 클라이언트가 준비되었습니다. 로그인해서 글을 쓰거나 공개 게시글을 확인할 수 있습니다.");
+  writeLog("Supabase 클라이언트를 초기화했습니다.");
+  setAuthFeedback("Supabase 이메일/비밀번호 인증을 사용하세요.");
+  setBoardFeedback("먼저 supabase-board.sql 을 실행한 뒤 새로고침하세요.");
 
   const { data, error } = await supabaseClient.auth.getSession();
   if (error) {
     setAuthFeedback(error.message);
-    writeLog(`Initial session read failed: ${error.message}`);
+    writeLog(`초기 세션 조회 실패: ${error.message}`);
   } else {
     writeSession(data.session ?? null);
-    writeLog(data.session ? "Recovered existing session." : "No existing session.");
+    writeLog(data.session ? "기존 세션을 복구했습니다." : "기존 세션이 없습니다.");
   }
 
   await loadPosts({ keepBusy: true });
@@ -504,11 +504,11 @@ async function initializeSupabase() {
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     writeSession(session);
     if (event === "SIGNED_IN") {
-      setAuthFeedback("Sign-in completed.");
+      setAuthFeedback("로그인이 완료되었습니다.");
     } else if (event === "SIGNED_OUT") {
-      setAuthFeedback("Signed out.");
+      setAuthFeedback("로그아웃되었습니다.");
     }
-    writeLog(`Auth event: ${event}`);
+    writeLog(`인증 이벤트: ${event}`);
 
     setBusy(true);
     try {
@@ -541,6 +541,6 @@ initializeSupabase().catch((error) => {
   setBusy(false);
   setAuthFeedback(error.message);
   setBoardFeedback(error.message);
-  setStatus("error", "Supabase initialization failed.");
-  writeLog(`Initialization failed: ${error.message}`);
+  setStatus("error", "Supabase 초기화에 실패했습니다.");
+  writeLog(`초기화 실패: ${error.message}`);
 });

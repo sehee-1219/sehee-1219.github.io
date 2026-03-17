@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>sehee-1219 | GitHub Pages x Supabase</title>
   <meta
     name="description"
-    content="Personal GitHub Pages site with live Supabase auth and a Supabase-backed bulletin board."
+    content="GitHub Pages와 Supabase를 연결한 개인 사이트이자 간단한 게시판입니다."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,31 +23,31 @@
         <p class="eyebrow">GITHUB PAGES x SUPABASE</p>
         <h1>sehee-1219</h1>
         <p class="lead">
-          This site now runs as a static GitHub Pages frontend with a live Supabase client
-          for auth and a simple bulletin board.
+          이 사이트는 GitHub Pages 정적 프런트엔드에 Supabase 인증과
+          간단한 게시판 기능을 연결한 페이지입니다.
         </p>
       </div>
 
       <div class="hero-actions">
-        <a class="button primary" href="https://github.com/sehee-1219" target="_blank" rel="noreferrer">View GitHub</a>
-        <a class="button secondary" href="#supabase-console">Open Supabase Console</a>
+        <a class="button primary" href="https://github.com/sehee-1219" target="_blank" rel="noreferrer">GitHub 보기</a>
+        <a class="button secondary" href="#supabase-console">Supabase 보기</a>
       </div>
 
       <div class="hero-metrics">
         <article class="metric-card">
-          <span class="metric-label">Repository</span>
+          <span class="metric-label">저장소</span>
           <strong>sehee-1219.github.io</strong>
         </article>
         <article class="metric-card">
-          <span class="metric-label">Deploy</span>
+          <span class="metric-label">배포</span>
           <strong>GitHub Pages</strong>
         </article>
         <article class="metric-card">
-          <span class="metric-label">Backend</span>
+          <span class="metric-label">백엔드</span>
           <strong>Supabase</strong>
         </article>
         <article class="metric-card">
-          <span class="metric-label">Frontend</span>
+          <span class="metric-label">프런트엔드</span>
           <strong>HTML / CSS / JS</strong>
         </article>
       </div>
@@ -56,24 +56,24 @@
     <main>
       <section class="panel reveal" id="about">
         <div class="section-heading">
-          <p class="eyebrow">ABOUT</p>
-          <h2>Static frontend, real backend</h2>
+          <p class="eyebrow">소개</p>
+          <h2>정적 프런트엔드, 실제 백엔드</h2>
         </div>
 
         <div class="grid two-column">
           <article class="info-card">
-            <h3>What is connected</h3>
+            <h3>무엇이 연결되었는지</h3>
             <p>
-              The page initializes the Supabase JavaScript client in the browser using your
-              project URL and public key, so GitHub Pages can talk directly to Supabase.
+              이 페이지는 브라우저에서 Supabase JavaScript 클라이언트를 초기화해서
+              GitHub Pages에서 바로 Supabase와 통신할 수 있게 구성되어 있습니다.
             </p>
           </article>
 
           <article class="info-card">
-            <h3>What you can test right now</h3>
+            <h3>지금 바로 테스트할 수 있는 것</h3>
             <p>
-              Email sign-up, email sign-in, sign-out, session persistence, post creation,
-              public post reads, and delete controls limited to the post owner.
+              이메일 회원가입, 로그인, 로그아웃, 세션 유지, 게시글 작성,
+              공개 글 조회, 본인 글 삭제를 바로 확인할 수 있습니다.
             </p>
           </article>
         </div>
@@ -81,73 +81,74 @@
 
       <section class="panel reveal" id="supabase-console">
         <div class="section-heading">
-          <p class="eyebrow">SUPABASE CONSOLE</p>
-          <h2>Auth and data checks from the live page</h2>
+          <p class="eyebrow">SUPABASE 콘솔</p>
+          <h2>실시간 페이지에서 인증과 데이터 확인</h2>
         </div>
 
         <div class="console-grid">
           <article class="console-card">
             <div class="card-header">
-              <h3>Auth</h3>
-              <span class="status-pill idle" id="connection-pill">Booting client</span>
+              <h3>인증</h3>
+              <span class="status-pill idle" id="connection-pill">클라이언트 시작 중</span>
             </div>
 
             <p class="card-copy" id="connection-text">
-              Loading the Supabase client in the browser.
+              브라우저에서 Supabase 클라이언트를 불러오는 중입니다.
             </p>
 
             <label class="field">
-              <span>Email</span>
+              <span>이메일</span>
               <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
             </label>
 
             <label class="field">
-              <span>Password</span>
-              <input id="password" type="password" autocomplete="current-password" placeholder="Minimum 6 characters">
+              <span>비밀번호</span>
+              <input id="password" type="password" autocomplete="current-password" placeholder="최소 6자 이상">
             </label>
 
             <div class="action-row">
-              <button class="button primary" id="sign-up-button" type="button">Sign Up</button>
-              <button class="button secondary" id="sign-in-button" type="button">Sign In</button>
-              <button class="button ghost" id="sign-out-button" type="button">Sign Out</button>
+              <button class="button primary" id="sign-up-button" type="button">회원가입</button>
+              <button class="button secondary" id="sign-in-button" type="button">로그인</button>
+              <button class="button ghost" id="sign-out-button" type="button">로그아웃</button>
             </div>
 
             <p class="inline-note" id="auth-feedback">
-              Email/password auth must be enabled in Supabase Auth.
+              Supabase Auth에서 이메일/비밀번호 로그인이 켜져 있어야 합니다.
             </p>
           </article>
 
           <article class="console-card">
             <div class="card-header">
-              <h3>Write a post</h3>
+              <h3>글 작성</h3>
               <span class="pill-muted"><code>board_posts</code></span>
             </div>
 
             <p class="card-copy">
-              Anyone can read posts. Only signed-in users can publish and delete their own posts.
+              누구나 글을 읽을 수 있고, 로그인한 사용자만 글을 작성하거나
+              자기 글을 삭제할 수 있습니다.
             </p>
 
             <label class="field">
-              <span>Display name</span>
+              <span>작성자 이름</span>
               <input id="author-name" type="text" autocomplete="nickname" placeholder="sehee">
             </label>
 
             <label class="field">
-              <span>Title</span>
-              <input id="post-title" type="text" autocomplete="off" placeholder="My first post">
+              <span>제목</span>
+              <input id="post-title" type="text" autocomplete="off" placeholder="첫 게시글">
             </label>
 
             <label class="field">
-              <span>Content</span>
-              <textarea id="post-content" rows="6" placeholder="Write something worth keeping."></textarea>
+              <span>내용</span>
+              <textarea id="post-content" rows="6" placeholder="남기고 싶은 내용을 적어보세요."></textarea>
             </label>
 
             <div class="action-row">
-              <button class="button primary" id="publish-button" type="button">Publish Post</button>
+              <button class="button primary" id="publish-button" type="button">게시하기</button>
             </div>
 
             <p class="inline-note" id="board-feedback">
-              Run <code>supabase-board.sql</code> once, then sign in to publish.
+              <code>supabase-board.sql</code> 을 한 번 실행한 뒤 로그인해서 글을 작성하세요.
             </p>
           </article>
         </div>
@@ -155,53 +156,53 @@
 
       <section class="panel reveal" id="board-feed">
         <div class="section-heading">
-          <p class="eyebrow">BOARD</p>
-          <h2>Latest posts</h2>
+          <p class="eyebrow">게시판</p>
+          <h2>최근 글</h2>
         </div>
 
         <div class="feed-toolbar">
           <p class="card-copy">
-            Public read, authenticated write and delete.
+            읽기는 공개, 작성과 삭제는 로그인 사용자만 가능합니다.
           </p>
-          <button class="button secondary" id="refresh-posts-button" type="button">Refresh Posts</button>
+          <button class="button secondary" id="refresh-posts-button" type="button">새로고침</button>
         </div>
 
         <div class="post-list" id="posts-list">
-          <article class="empty-state">Loading posts...</article>
+          <article class="empty-state">게시글을 불러오는 중입니다...</article>
         </div>
       </section>
 
       <section class="panel accent reveal" id="status">
         <div class="section-heading">
-          <p class="eyebrow">STATUS</p>
-          <h2>Session state and setup notes</h2>
+          <p class="eyebrow">상태</p>
+          <h2>세션 상태와 설정 안내</h2>
         </div>
 
         <div class="grid two-column">
           <article class="info-card">
-            <h3>Current session</h3>
-            <p class="session-summary" id="session-summary">No active session.</p>
-            <pre class="code-panel compact" id="session-output">Waiting for Supabase...</pre>
+            <h3>현재 세션</h3>
+            <p class="session-summary" id="session-summary">활성 세션이 없습니다.</p>
+            <pre class="code-panel compact" id="session-output">Supabase를 기다리는 중입니다...</pre>
           </article>
 
           <article class="info-card">
-            <h3>Required Supabase settings</h3>
+            <h3>필요한 Supabase 설정</h3>
             <ul class="config-list">
-              <li>Run <code>supabase-board.sql</code> in the Supabase SQL Editor.</li>
-              <li>Set Site URL to <code>https://sehee-1219.github.io/</code>.</li>
-              <li>Set Additional Redirect URL to <code>https://sehee-1219.github.io/</code>.</li>
-              <li>Enable email/password auth if you want posting to work.</li>
-              <li>Keep the service role key out of this repository.</li>
+              <li>Supabase SQL Editor에서 <code>supabase-board.sql</code> 을 실행합니다.</li>
+              <li>Site URL을 <code>https://sehee-1219.github.io/</code> 로 설정합니다.</li>
+              <li>Additional Redirect URL도 <code>https://sehee-1219.github.io/</code> 로 추가합니다.</li>
+              <li>글쓰기를 쓰려면 이메일/비밀번호 로그인을 켭니다.</li>
+              <li>service role 키는 이 저장소에 넣지 않습니다.</li>
             </ul>
           </article>
         </div>
 
         <article class="log-card">
           <div class="card-header">
-            <h3>Activity log</h3>
-            <span class="pill-muted">Newest first</span>
+            <h3>활동 로그</h3>
+            <span class="pill-muted">최신순</span>
           </div>
-          <pre class="code-panel compact" id="activity-log">Waiting for client startup...</pre>
+          <pre class="code-panel compact" id="activity-log">클라이언트 시작을 기다리는 중입니다...</pre>
         </article>
       </section>
     </main>
