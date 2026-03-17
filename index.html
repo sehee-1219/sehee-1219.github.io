@@ -124,8 +124,8 @@
             </div>
 
             <p class="card-copy">
-              누구나 글을 읽을 수 있고, 로그인한 사용자만 글을 작성하거나
-              자기 글을 삭제할 수 있습니다.
+              누구나 글을 읽고 쓸 수 있습니다. 로그인한 사용자는 자기 글을 삭제할 수 있고,
+              익명 글은 이 페이지에서 삭제 기능을 제공하지 않습니다.
             </p>
 
             <label class="field">
@@ -148,7 +148,7 @@
             </div>
 
             <p class="inline-note" id="board-feedback">
-              <code>supabase-board.sql</code> 을 한 번 실행한 뒤 로그인해서 글을 작성하세요.
+              <code>supabase-board.sql</code> 을 다시 실행하면 로그인 없이도 글을 작성할 수 있습니다.
             </p>
           </article>
         </div>
@@ -162,7 +162,7 @@
 
         <div class="feed-toolbar">
           <p class="card-copy">
-            읽기는 공개, 작성과 삭제는 로그인 사용자만 가능합니다.
+            읽기와 작성은 공개되어 있고, 삭제는 로그인한 작성자 글만 가능합니다.
           </p>
           <button class="button secondary" id="refresh-posts-button" type="button">새로고침</button>
         </div>
@@ -189,6 +189,7 @@
             <h3>필요한 Supabase 설정</h3>
             <ul class="config-list">
               <li>Supabase SQL Editor에서 <code>supabase-board.sql</code> 을 실행합니다.</li>
+              <li>익명 글쓰기를 켜려면 수정된 <code>supabase-board.sql</code> 을 다시 실행합니다.</li>
               <li>Site URL을 <code>https://sehee-1219.github.io/</code> 로 설정합니다.</li>
               <li>Additional Redirect URL도 <code>https://sehee-1219.github.io/</code> 로 추가합니다.</li>
               <li>글쓰기를 쓰려면 이메일/비밀번호 로그인을 켭니다.</li>

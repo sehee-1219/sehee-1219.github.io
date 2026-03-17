@@ -117,7 +117,7 @@ function syncActionState() {
   signUpButton.disabled = isBusy || !clientReady;
   signInButton.disabled = isBusy || !clientReady;
   signOutButton.disabled = isBusy || !clientReady || !currentSession;
-  publishButton.disabled = isBusy || !clientReady || !currentSession;
+  publishButton.disabled = isBusy || !clientReady;
   refreshPostsButton.disabled = isBusy || !clientReady;
 
   document.querySelectorAll("[data-delete-post]").forEach((button) => {
@@ -146,13 +146,9 @@ function getCredentials() {
 }
 
 function getPostPayload() {
-  if (!currentSession) {
-    throw new Error("글을 작성하려면 먼저 로그인하세요.");
-  }
-
   const authorName =
     authorNameInput.value.trim() ||
-    currentSession.user?.email?.split("@")[0] ||
+    currentSession?.user?.email?.split("@")[0] ||
     "";
   const title = postTitleInput.value.trim();
   const content = postContentInput.value.trim();
@@ -182,7 +178,7 @@ function getPostPayload() {
   }
 
   return {
-    user_id: currentSession.user.id,
+    user_id: currentSession?.user?.id ?? null,
     author_name: authorName,
     title,
     content,
@@ -195,7 +191,7 @@ function renderPosts(posts) {
   if (!posts.length) {
     const emptyState = document.createElement("article");
     emptyState.className = "empty-state";
-    emptyState.textContent = "아직 게시글이 없습니다. 로그인해서 첫 글을 작성해보세요.";
+    emptyState.textContent = "아직 게시글이 없습니다. 로그인 없이도 첫 글을 작성할 수 있습니다.";
     postsList.append(emptyState);
     syncActionState();
     return;
@@ -268,8 +264,8 @@ async function loadPosts(options = {}) {
     renderPosts(currentPosts);
     setBoardFeedback(
       currentSession
-        ? "새 글을 작성하거나 내 글을 삭제할 수 있습니다."
-        : "게시글 읽기는 공개되어 있습니다. 글을 쓰려면 로그인하세요."
+        ? "로그인 상태에서는 글을 쓰고 내 글을 삭제할 수 있습니다."
+        : "로그인 없이도 글을 쓸 수 있습니다. 익명 글은 이 페이지에서 삭제할 수 없습니다."
     );
     setStatus("success", `${BOARD_TABLE} 에서 게시글 ${currentPosts.length}개를 불러왔습니다.`);
     writeLog(`게시글 ${currentPosts.length}개를 불러왔습니다.`);
@@ -423,7 +419,11 @@ async function publishPost() {
 
     postTitleInput.value = "";
     postContentInput.value = "";
-    setBoardFeedback("게시글이 등록되었습니다.");
+    setBoardFeedback(
+      currentSession
+        ? "게시글이 등록되었습니다."
+        : "익명 게시글이 등록되었습니다."
+    );
     setStatus("success", `${BOARD_TABLE} 에 새 글이 추가되었습니다.`);
     writeLog(`"${payload.title}" 게시글을 작성했습니다.`);
     await loadPosts({ keepBusy: true });
@@ -487,8 +487,8 @@ async function initializeSupabase() {
 
   setStatus("idle", "Supabase 클라이언트가 준비되었습니다. 로그인해서 글을 쓰거나 공개 게시글을 확인할 수 있습니다.");
   writeLog("Supabase 클라이언트를 초기화했습니다.");
-  setAuthFeedback("Supabase 이메일/비밀번호 인증을 사용하세요.");
-  setBoardFeedback("먼저 supabase-board.sql 을 실행한 뒤 새로고침하세요.");
+  setAuthFeedback("로그인은 선택입니다. 원하면 이메일/비밀번호 인증을 사용할 수 있습니다.");
+  setBoardFeedback("로그인 없이도 글을 쓸 수 있습니다. 먼저 supabase-board.sql 을 다시 실행한 뒤 새로고침하세요.");
 
   const { data, error } = await supabaseClient.auth.getSession();
   if (error) {

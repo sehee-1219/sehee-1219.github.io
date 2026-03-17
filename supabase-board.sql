@@ -12,13 +12,16 @@ $$;
 
 create table if not exists public.board_posts (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
+  user_id uuid references auth.users (id) on delete cascade,
   author_name text not null check (char_length(author_name) between 1 and 40),
   title text not null check (char_length(title) between 1 and 120),
   content text not null check (char_length(content) between 1 and 2000),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.board_posts
+alter column user_id drop not null;
 
 alter table public.board_posts enable row level security;
 
@@ -37,11 +40,15 @@ to anon, authenticated
 using (true);
 
 drop policy if exists "board_posts_insert_own" on public.board_posts;
-create policy "board_posts_insert_own"
+drop policy if exists "board_posts_insert_public" on public.board_posts;
+create policy "board_posts_insert_public"
 on public.board_posts
 for insert
-to authenticated
-with check ((select auth.uid()) = user_id);
+to anon, authenticated
+with check (
+  user_id is null
+  or (select auth.uid()) = user_id
+);
 
 drop policy if exists "board_posts_update_own" on public.board_posts;
 create policy "board_posts_update_own"
